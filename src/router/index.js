@@ -102,6 +102,56 @@ const router = createRouter({
       name: 'practice-reactive-example',
       component: () => import('../components/practices/basic/ReactiveExample.vue'),
     },
+    {
+      path: '/practice/reactive-ref',
+      name: 'practice-reactive-ref',
+      component: () => import('../components/practices/basic/ReactiveRef.vue'),
+    },
+    {
+      path: '/practice/reactive-reactive',
+      name: 'practice-reactive-reactive',
+      component: () => import('../components/practices/basic/ReactiveReactive.vue'),
+    },
+    {
+      path: '/practice/computed-basic',
+      name: 'practice-computed-basic',
+      component: () => import('../components/practices/basic/ComputedBasic.vue'),
+    },
+    {
+      path: '/practice/watchers-basic',
+      name: 'practice-watchers-basic',
+      component: () => import('../components/practices/basic/WatchersBasic.vue'),
+    },
+    {
+      path: '/practice/watchers-deep',
+      name: 'practice-watchers-deep',
+      component: () => import('../components/practices/basic/WatchersDeep.vue'),
+    },
+    {
+      path: '/practice/watchers-multi',
+      name: 'practice-watchers-multi',
+      component: () => import('../components/practices/basic/WatchersMulti.vue'),
+    },
+    {
+      path: '/practice/watchers-reactive',
+      name: 'practice-watchers-reactive',
+      component: () => import('../components/practices/basic/WatchersReactive.vue'),
+    },
+    {
+      path: '/practice/watchers-reactive-array',
+      name: 'practice-watchers-reactive-array',
+      component: () => import('../components/practices/basic/WatchersReactiveArray.vue'),
+    },
+    {
+      path: '/practice/watchers-ref-array',
+      name: 'practice-watchers-ref-array',
+      component: () => import('../components/practices/basic/WatchersRefArray.vue'),
+    },
+    {
+      path: '/practice/watchers-watch-effect',
+      name: 'practice-watchers-watch-effect',
+      component: () => import('../components/practices/basic/WatchersWatchEffect.vue'),
+    },
   ],
 })
 
