@@ -62,6 +62,36 @@ const router = createRouter({
       name: 'practice-weather-mockup',
       component: () => import('../components/practices/basic/handson/WeatherMockup.vue'),
     },
+    {
+      path: '/practice/v-bind',
+      name: 'practice-v-bind',
+      component: () => import('../components/practices/basic/VueBind.vue'),
+    },
+    {
+      path: '/practice/v-bind-shorthand',
+      name: 'practice-v-bind-shorthand',
+      component: () => import('../components/practices/basic/VueBindShorthand.vue'),
+    },
+    {
+      path: '/practice/v-bind-class',
+      name: 'practice-v-bind-class',
+      component: () => import('../components/practices/basic/VueBindClass.vue'),
+    },
+    {
+      path: '/practice/v-bind-style',
+      name: 'practice-v-bind-style',
+      component: () => import('../components/practices/basic/VueBindStyle.vue'),
+    },
+    {
+      path: '/practice/v-for',
+      name: 'practice-v-for',
+      component: () => import('../components/practices/basic/VueFor.vue'),
+    },
+    {
+      path: '/practice/v-if',
+      name: 'practice-v-if',
+      component: () => import('../components/practices/basic/VueIf.vue'),
+    },
   ],
 })
 

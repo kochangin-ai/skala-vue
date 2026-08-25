@@ -11,6 +11,12 @@ const practiceLinks = [
   { to: '/practice/v-model-modifiers', label: 'v-model 수식어' },
   { to: '/practice/vue-style', label: 'Vue 스타일' },
   { to: '/practice/weather-mockup', label: '날씨 Mockup' },
+  { to: '/practice/v-bind', label: 'v-bind 기본' },
+  { to: '/practice/v-bind-shorthand', label: 'v-bind 단축 문법' },
+  { to: '/practice/v-bind-class', label: 'v-bind 클래스' },
+  { to: '/practice/v-bind-style', label: 'v-bind 스타일' },
+  { to: '/practice/v-for', label: 'v-for' },
+  { to: '/practice/v-if', label: 'v-if' },
 ]
 </script>
 
