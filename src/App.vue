@@ -30,7 +30,10 @@ const practiceLinks = [
   { to: '/practice/watchers-watch-effect', label: 'watchEffect()' },
 ]
 
-const handsonLinks = [{ to: '/practice/weather-mockup', label: '날씨 Mockup' }]
+const handsonLinks = [
+  { to: '/practice/weather-mockup', label: '날씨 Mockup' },
+  { to: '/practice/weather-composition', label: '날씨 Composition (computed/watch)' },
+]
 </script>
 
 <template>

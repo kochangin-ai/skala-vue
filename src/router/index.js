@@ -63,6 +63,11 @@ const router = createRouter({
       component: () => import('../components/practices/basic/handson/WeatherMockup.vue'),
     },
     {
+      path: '/practice/weather-composition',
+      name: 'practice-weather-composition',
+      component: () => import('../components/practices/basic/handson/WeatherComposition.vue'),
+    },
+    {
       path: '/practice/v-bind',
       name: 'practice-v-bind',
       component: () => import('../components/practices/basic/VueBind.vue'),
