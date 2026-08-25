@@ -1,6 +1,6 @@
 # skala-vue
 
-skala vue 연습공간입니다.
+skala vue 연습 공간입니다.
 
 ---
 
