@@ -17,6 +17,8 @@ const practiceLinks = [
   { to: '/practice/v-bind-style', label: 'v-bind 스타일' },
   { to: '/practice/v-for', label: 'v-for' },
   { to: '/practice/v-if', label: 'v-if' },
+  { to: '/practice/ref-example', label: 'ref() 기초' },
+  { to: '/practice/reactive-example', label: 'reactive()' },
 ]
 </script>
 

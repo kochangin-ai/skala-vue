@@ -92,6 +92,16 @@ const router = createRouter({
       name: 'practice-v-if',
       component: () => import('../components/practices/basic/VueIf.vue'),
     },
+    {
+      path: '/practice/ref-example',
+      name: 'practice-ref-example',
+      component: () => import('../components/practices/basic/RefExample.vue'),
+    },
+    {
+      path: '/practice/reactive-example',
+      name: 'practice-reactive-example',
+      component: () => import('../components/practices/basic/ReactiveExample.vue'),
+    },
   ],
 })
 
