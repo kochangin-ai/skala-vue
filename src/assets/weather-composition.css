@@ -1,0 +1,17 @@
+.btn-favorite {
+  margin-left: auto;
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.btn-favorite.active {
+  filter: drop-shadow(0 0 2px #f1c40f);
+}
+
+.empty-message {
+  text-align: center;
+  color: #e74c3c;
+  padding: 10px 0;
+}
