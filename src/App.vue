@@ -28,6 +28,7 @@ const practiceLinks = [
   { to: '/practice/watchers-reactive-array', label: 'reactive 배열 감시' },
   { to: '/practice/watchers-ref-array', label: 'ref 배열 감시' },
   { to: '/practice/watchers-watch-effect', label: 'watchEffect()' },
+  { to: '/practice/component-lifecycle-hook', label: '컴포넌트 라이프사이클 훅' },
 ]
 
 const handsonLinks = [

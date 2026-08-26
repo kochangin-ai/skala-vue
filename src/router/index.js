@@ -157,6 +157,11 @@ const router = createRouter({
       name: 'practice-watchers-watch-effect',
       component: () => import('../components/practices/basic/WatchersWatchEffect.vue'),
     },
+    {
+      path: '/practice/component-lifecycle-hook',
+      name: 'practice-component-lifecycle-hook',
+      component: () => import('../components/practices/basic/ComponentLifecycleHook.vue'),
+    },
   ],
 })
 
