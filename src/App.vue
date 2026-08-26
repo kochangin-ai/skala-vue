@@ -41,6 +41,7 @@ const practiceLinks = [
 const handsonLinks = [
   { to: '/practice/weather-mockup', label: '날씨 Mockup' },
   { to: '/practice/weather-composition', label: '날씨 Composition (computed/watch)' },
+  { to: '/practice/weather-component', label: '날씨 Component 분리' },
 ]
 </script>
 

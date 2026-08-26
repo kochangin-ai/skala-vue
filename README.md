@@ -67,3 +67,45 @@ watch(favoriteCities, (newList) => {
 ### CSS 분리: 공통/외부 CSS 적용 방법
 
 프로젝트 전체 공통 스타일은 `main.js`에 등록하고, 특정 컴포넌트 전용 스타일은 `<style>` 안에서 `@import`로 가져온다는 방식을 적용해봤습니다. WeatherComposition은 WeatherMockup을 기반으로 이어서 만든 컴포넌트라, 애초에 같은 기반 위에서 출발한 만큼 `<style>` 블록도 공통된 부분이 많았습니다. 그래서 두 컴포넌트가 공유하는 기반 스타일은 `weather-card.css`로 뽑아서 같이 import했습니다. 즐겨찾기처럼 새로 추가한 스타일만 `weather-composition.css`로 따로 뒀습니다. `@import`는 `scoped` 안에서는 효과가 없다는 걸 알게 되어 `scoped`는 지우고 사용했습니다.
+
+---
+
+## Handson: WeatherComponent (컴포넌트 분리)
+
+`src/components/practices/basic/handson/WeatherParent.vue`는 WeatherComposition 하나에 몰려있던 코드를 기능 변경 없이 여러 컴포넌트로 쪼갠 버전입니다.
+
+### 요구사항대로 나눈 4개 컴포넌트
+
+- **WeatherParent.vue**: 도시 목록, 검색어, 즐겨찾기 등 모든 반응형 상태와 로직을 그대로 들고 있습니다. 자식 컴포넌트들은 표시와 이벤트 전달만 담당하고, 실제 상태 변경은 전부 여기서 처리합니다.
+- **BaseDashboardCard.vue**: 검색박스/리스트박스가 배경, 둥근 모서리, 여백까지 똑같은 디자인을 쓰고 있길래 공통 카드 레이아웃으로 뽑았습니다. `title` prop과 기본 슬롯만 있고, 실제 내용은 slot으로 부모가 채워 넣습니다.
+- **SearchBar.vue**: 검색어를 표시만 하고, 입력/엔터가 발생하면 `update-query` / `search` 이벤트로 부모에게 알립니다.
+- **WeatherCard.vue**: 도시 하나의 정보를 표시하고, 카드 선택/상세보기 동작을 각각 `select-card` / `click-detail` 이벤트로 부모에게 올려보냅니다. 즐겨찾기는 아래 Provide/Inject 항목처럼 WeatherCard를 거치지 않고 별도로 처리됩니다.
+
+### 요구사항 외에 추가로 나눈 컴포넌트
+
+- **StatusBar.vue**: 하단 상태 문구는 `message` prop 하나만 받아서 보여주는 게 전부라, 가장 단순하게 분리할 수 있는 부분이었습니다.
+- **FavoriteButton.vue**: WeatherCard 안에 즐겨찾기 별 버튼 로직이 섞여 있어서, WeatherCard를 더 얇게 만들기 위해 따로 뺐습니다. 아래 Provide/Inject 항목에서 다루듯, 이 컴포넌트는 즐겨찾기 상태를 WeatherCard가 아니라 WeatherParent와 직접 주고받습니다.
+
+### Provide/Inject: 즐겨찾기 상태
+
+처음엔 `getWeatherIcon` 함수를 WeatherParent가 provide하고 WeatherCard가 inject하는 식으로 짜봤는데, 생각해보니 WeatherCard는 slot 내용이라 BaseDashboardCard를 거치지 않고 WeatherParent 스코프에서 바로 컴파일되는 직계 자식이었습니다. 즉 몇 단계를 건너뛰는 상황이 아니라 그냥 props를 대체한 것뿐이라 provide/inject를 억지로 쓴 셈이었습니다.
+
+그래서 진짜로 조상 손자 관계인 지점을 찾아서 옮겼습니다. `FavoriteButton.vue`는 WeatherCard의 진짜 자식(WeatherParent 기준으로는 손자)이라, 여기서 WeatherCard를 건너뛰고 최상위 WeatherParent의 즐겨찾기 상태(`favoriteCities`)와 변경 함수(`toggleFavorite`)를 직접 주입받도록 바꿨습니다. FavoriteButton은 이제 도시 `id`만 prop으로 받고, 즐겨찾기 여부 판단과 토글 요청을 전부 inject한 값으로 직접 처리합니다. 대신 `getWeatherIcon`은 원래대로 WeatherParent → WeatherCard에 평범한 prop으로 내렸습니다.
+
+```js
+// WeatherParent.vue
+provide('favoriteCities', readonly(favoriteCities))
+provide('toggleFavorite', toggleFavorite)
+```
+
+```js
+// FavoriteButton.vue (WeatherCard를 건너뛰고 WeatherParent에서 바로 주입)
+const favoriteCities = inject('favoriteCities')
+const toggleFavorite = inject('toggleFavorite')
+const isFavorite = computed(() => favoriteCities.value.includes(props.id))
+```
+
+### 컴포넌트 간 Props / Emit 흐름
+
+https://mermaid.ai/app/dashboard 를 이용해서 각 컴포넌트 간 흐름도를 작성했습니다.
+![WeatherComponent props/emit/provide 흐름도](readmesrc/WeatherComponent.png)
