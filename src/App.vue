@@ -29,6 +29,10 @@ const practiceLinks = [
   { to: '/practice/watchers-ref-array', label: 'ref 배열 감시' },
   { to: '/practice/watchers-watch-effect', label: 'watchEffect()' },
   { to: '/practice/component-lifecycle-hook', label: '컴포넌트 라이프사이클 훅' },
+  // Props & Emits 예제 (Parent 페이지에서 Child를 함께 렌더링)
+  { to: '/practice/props-emits-parent', label: 'Props & Emits' },
+  // Provide/Inject 2단계 조상 예제
+  { to: '/practice/provide-inject-grandparent', label: 'Provide & Inject (GrandParent)' },
 ]
 
 const handsonLinks = [

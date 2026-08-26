@@ -162,6 +162,17 @@ const router = createRouter({
       name: 'practice-component-lifecycle-hook',
       component: () => import('../components/practices/basic/ComponentLifecycleHook.vue'),
     },
+    {
+      path: '/practice/props-emits-parent',
+      name: 'practice-props-emits-parent',
+      component: () => import('../components/practices/basic/PropsEmitsParent.vue'),
+    },
+    // Provide/Inject 2단계 조상 예제의 진입점 (GrandParent -> Parent -> GrandChild)
+    {
+      path: '/practice/provide-inject-grandparent',
+      name: 'practice-provide-inject-grandparent',
+      component: () => import('../components/practices/basic/ProvideInjectGrandParent.vue'),
+    },
   ],
 })
 
