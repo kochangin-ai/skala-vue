@@ -173,6 +173,21 @@ const router = createRouter({
       name: 'practice-provide-inject-grandparent',
       component: () => import('../components/practices/basic/ProvideInjectGrandParent.vue'),
     },
+    {
+      path: '/practice/slot-default',
+      name: 'practice-slot-default',
+      component: () => import('../components/practices/basic/SlotDefaultParent.vue'),
+    },
+    {
+      path: '/practice/slot-named',
+      name: 'practice-slot-named',
+      component: () => import('../components/practices/basic/SlotNamedParent.vue'),
+    },
+    {
+      path: '/practice/slot-scoped',
+      name: 'practice-slot-scoped',
+      component: () => import('../components/practices/basic/SlotScopedParent.vue'),
+    },
   ],
 })
 

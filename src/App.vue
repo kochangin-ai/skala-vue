@@ -33,6 +33,9 @@ const practiceLinks = [
   { to: '/practice/props-emits-parent', label: 'Props & Emits' },
   // Provide/Inject 2단계 조상 예제
   { to: '/practice/provide-inject-grandparent', label: 'Provide & Inject (GrandParent)' },
+  { to: '/practice/slot-default', label: 'Default Slot' },
+  { to: '/practice/slot-named', label: 'Named Slot' },
+  { to: '/practice/slot-scoped', label: 'Scoped Slot' },
 ]
 
 const handsonLinks = [
