@@ -193,6 +193,33 @@ const router = createRouter({
       name: 'practice-slot-scoped',
       component: () => import('../components/practices/basic/SlotScopedParent.vue'),
     },
+    // Vue Router 실습: 홈/소개/즐겨찾기/상세(:cityId) 다중 페이지 + Catch-all
+    {
+      path: '/weather-app',
+      name: 'weather-app-home',
+      component: () => import('../views/WeatherHomeView.vue'),
+    },
+    {
+      path: '/weather-app/about',
+      name: 'weather-app-about',
+      component: () => import('../views/WeatherAboutView.vue'),
+    },
+    {
+      path: '/weather-app/favorites',
+      name: 'weather-app-favorites',
+      component: () => import('../views/WeatherFavoritesView.vue'),
+    },
+    {
+      path: '/weather-app/weather/:cityId',
+      name: 'weather-app-detail',
+      component: () => import('../views/WeatherDetailView.vue'),
+    },
+    // Catch-all Route: 정의되지 않은 모든 경로를 404 페이지로 처리 (반드시 routes 배열 마지막에 위치)
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFoundView.vue'),
+    },
   ],
 })
 

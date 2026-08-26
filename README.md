@@ -109,3 +109,17 @@ const isFavorite = computed(() => favoriteCities.value.includes(props.id))
 
 https://mermaid.ai/app/dashboard 를 이용해서 각 컴포넌트 간 흐름도를 작성했습니다.
 ![WeatherComponent props/emit/provide 흐름도](readmesrc/WeatherComponent.png)
+
+---
+
+## Handson: Weather Router
+
+`/weather-app` 경로 아래에 WeatherComponent를 Vue Router 기반 다중 페이지 구조로 확장한 버전입니다.
+
+라우터 지연 로딩은 원래 `src/router/index.js`에 있던 모든 라우트가 이미 `component: () => import(...)` 형태였어서, 새로 추가한 `/weather-app` 계열 라우트도 그 관례를 그대로 따라 지연 로딩으로 등록했습니다. Catch-all Route는 `/:pathMatch(.*)*` 패턴으로 `NotFoundView.vue`를 연결했고, Vue Router는 routes 배열에 등록된 순서대로 매칭을 시도하기 때문에 이 라우트를 배열 맨 마지막에 둬서 다른 라우트에 안 걸리는 경로만 여기로 떨어지게 했습니다. App.vue의 Navigation Bar와 `<RouterView />`는 이미 처음부터 있던 구조라 손댈 게 없었고, 이번엔 Handson 목록에 "날씨 Vue Router 앱" 링크 하나만 추가해서 진입점을 열어뒀습니다.
+
+WeatherHomeView.vue는 WeatherParent.vue의 반응형 상태와 로직을 거의 그대로 옮겨왔고, 상세보기 버튼을 눌렀을 때 기존의 `window.alert()` 호출을 지우고 `router.push()`로 상세 페이지(`/weather-app/weather/:cityId`)로 이동하도록 바꿨습니다. WeatherDetailView.vue는 `onMounted` 시점에 라우트 파라미터 `route.params.cityId`를 읽어서 `weatherMockData` 배열에서 해당 도시 객체를 찾아 화면에 뿌려주는 식으로 만들었습니다. WeatherAboutView.vue는 이 프로젝트가 어떤 흐름으로 만들어졌는지 소개하는 문구와 "대시보드 홈으로 이동" 버튼을 넣었고, 추가 view로는 즐겨찾기한 도시만 모아 보여주는 WeatherFavoritesView.vue를 만들어서 `/weather-app/favorites`로 라우팅했습니다.
+
+### 트러블 슈팅: 왜 `/`가 아니라 `/weather-app`인지
+
+과제 요구사항 원문은 WeatherHomeView를 `/` 경로에 두라고 되어 있는데, 저는 `/weather-app`에 뒀습니다. 솔직히 말하면 이 프로젝트의 `/` 경로가 지금까지 실습한 모든 Code Challenge/Handson 링크를 모아둔 야매(?) 홈 화면 역할을 하고 있어서, 여기를 WeatherHomeView로 갈아치우면 지금까지 쌓아온 다른 실습 페이지로 가는 진입로가 전부 없어지는 상황이었습니다. 그래서 기존 라우터 구조를 건드리지 않는 선에서 `/weather-app`을 이번 과제만의 새 루트로 잡고, 그 밑에 `/weather-app/about`, `/weather-app/favorites`, `/weather-app/weather/:cityId`를 매달았습니다. Catch-all Route만 앱 전체에 공통으로 걸리는 전역 라우트라 그대로 뒀습니다.
