@@ -236,6 +236,46 @@ const router = createRouter({
       name: 'weather-store-detail',
       component: () => import('../views/WeatherStoreDetailView.vue'),
     },
+    // Weather Axios 실습: Weather Store 페이지를 분리 복제(components/exercise-axios/, api/openWeatherApi.js,
+    // stores/feelsLikeAxiosStore.js)한 뒤, mock 날씨 데이터를 OpenWeatherMap 실시간 API로 교체한 버전.
+    // Weather Store 쪽 파일은 건드리지 않음.
+    {
+      path: '/weather-axios',
+      name: 'weather-axios-home',
+      component: () => import('../views/WeatherAxiosHomeView.vue'),
+    },
+    {
+      path: '/weather-axios/favorites',
+      name: 'weather-axios-favorites',
+      component: () => import('../views/WeatherAxiosFavoritesView.vue'),
+    },
+    {
+      path: '/weather-axios/about',
+      name: 'weather-axios-about',
+      component: () => import('../views/WeatherAxiosAboutView.vue'),
+    },
+    {
+      path: '/weather-axios/weather/:cityId',
+      name: 'weather-axios-detail',
+      component: () => import('../views/WeatherAxiosDetailView.vue'),
+    },
+    // Weather Axios 확장(요구사항 3): 같은 OpenWeatherMap 데이터를 기업 온열질환 예방용으로 재활용.
+    // 체감온도(heat/heatIndex.js) + 작업장 목록(stores/worksiteStore.js, localStorage)
+    {
+      path: '/weather-axios/heat-safety',
+      name: 'heat-safety-home',
+      component: () => import('../views/HeatSafetyHomeView.vue'),
+    },
+    {
+      path: '/weather-axios/heat-safety/about',
+      name: 'heat-safety-about',
+      component: () => import('../views/HeatSafetyAboutView.vue'),
+    },
+    {
+      path: '/weather-axios/heat-safety/site/:siteId',
+      name: 'heat-safety-detail',
+      component: () => import('../views/HeatSafetyDetailView.vue'),
+    },
     // Code Challenge: Axios 라이브러리 실습 (CRUD 프로토타입 / 실시간 날씨 통신)
     {
       path: '/practice/axios-json',

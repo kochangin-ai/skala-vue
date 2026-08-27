@@ -47,6 +47,7 @@ const handsonLinks = [
   { to: '/practice/weather-component', label: '날씨 Component 분리' },
   { to: '/weather-app', label: '날씨 Vue Router 앱' },
   { to: '/weather-store', label: '날씨 Pinia Store (체감온도)' },
+  { to: '/weather-axios', label: '날씨 Axios (OpenWeatherMap 실시간)' },
 ]
 </script>
 
