@@ -276,6 +276,43 @@ const router = createRouter({
       name: 'heat-safety-detail',
       component: () => import('../views/HeatSafetyDetailView.vue'),
     },
+    // Handson: Weather UI Library — Weather Axios 단계를 PrimeVue로 재스킨(+ 계절 배경 테마).
+    // 로직/API는 그대로 재사용하고 화면 표현만 교체. 파일은 views/weather-ui/, components/exercise-ui/ 로 분리 복제.
+    {
+      path: '/weather-ui',
+      name: 'weather-ui-home',
+      component: () => import('../views/weather-ui/WeatherUiHomeView.vue'),
+    },
+    {
+      path: '/weather-ui/favorites',
+      name: 'weather-ui-favorites',
+      component: () => import('../views/weather-ui/WeatherUiFavoritesView.vue'),
+    },
+    {
+      path: '/weather-ui/about',
+      name: 'weather-ui-about',
+      component: () => import('../views/weather-ui/WeatherUiAboutView.vue'),
+    },
+    {
+      path: '/weather-ui/weather/:cityId',
+      name: 'weather-ui-detail',
+      component: () => import('../views/weather-ui/WeatherUiDetailView.vue'),
+    },
+    {
+      path: '/weather-ui/heat-safety',
+      name: 'weather-ui-heat-safety-home',
+      component: () => import('../views/weather-ui/WeatherUiHeatSafetyHomeView.vue'),
+    },
+    {
+      path: '/weather-ui/heat-safety/about',
+      name: 'weather-ui-heat-safety-about',
+      component: () => import('../views/weather-ui/WeatherUiHeatSafetyAboutView.vue'),
+    },
+    {
+      path: '/weather-ui/heat-safety/site/:siteId',
+      name: 'weather-ui-heat-safety-detail',
+      component: () => import('../views/weather-ui/WeatherUiHeatSafetyDetailView.vue'),
+    },
     // Code Challenge: Axios 라이브러리 실습 (CRUD 프로토타입 / 실시간 날씨 통신)
     {
       path: '/practice/axios-json',
@@ -286,6 +323,11 @@ const router = createRouter({
       path: '/practice/axios-weather',
       name: 'practice-axios-weather',
       component: () => import('../components/practices/basic/library/AxiosWeather.vue'),
+    },
+    {
+      path: '/practice/element-plus',
+      name: 'practice-element-plus',
+      component: () => import('../components/practices/basic/library/ElementPlus.vue'),
     },
     // Catch-all Route: 정의되지 않은 모든 경로를 404 페이지로 처리 (반드시 routes 배열 마지막에 위치)
     {

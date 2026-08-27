@@ -39,6 +39,8 @@ const practiceLinks = [
   // Code Challenge: Axios 라이브러리
   { to: '/practice/axios-json', label: 'Axios CRUD (JSONPlaceholder)' },
   { to: '/practice/axios-weather', label: 'Axios 실시간 날씨' },
+  // Code Challenge: Element Plus UI 라이브러리
+  { to: '/practice/element-plus', label: 'Element Plus 컴포넌트' },
 ]
 
 const handsonLinks = [
@@ -48,6 +50,7 @@ const handsonLinks = [
   { to: '/weather-app', label: '날씨 Vue Router 앱' },
   { to: '/weather-store', label: '날씨 Pinia Store (체감온도)' },
   { to: '/weather-axios', label: '날씨 Axios (OpenWeatherMap 실시간)' },
+  { to: '/weather-ui', label: '날씨 UI Library (PrimeVue 재스킨)' },
 ]
 </script>
 

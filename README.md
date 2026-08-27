@@ -194,7 +194,7 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 2. **OpenWeatherMap API 추가로 기능 확대** — 현재 날씨에 더해 예보 / 대기질 API를 붙였습니다.
 3. **체감온도 활용 + 외부 위치 API** — 앱이 계산만 하던 체감온도를 온열질환·한랭질환 정부 예방 가이드에 연결하고, 브라우저 위치 API로 사용자가 자기 현재 위치를 작업장으로 등록해 예방 조치를 확인할 수 있게 했습니다.
 
-### 1: 실제 날씨 데이터 적용 (mock → API)
+### 실제 날씨 데이터 적용 (목업데이터 → API)
 
 지금까지 `weatherMockData` 상수를 그대로 화면에 뿌렸는데, 이번엔 그 자리를 전부 OpenWeatherMap 응답으로 대체했습니다.
 
@@ -202,7 +202,7 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 - **응답 normalize**: OpenWeatherMap 응답을 이전 단계 화면이 그대로 쓰던 도시 객체(`{ temp, status, humidity, windSpeed, ... }`) 형태로 변환합니다. `temp/humidity/windSpeed` 키를 유지한 덕분에 `feelsLikeAxiosStore.calculateFeelsLike()`(계절별 체감온도)를 한 줄도 안 고치고 재사용했습니다.
 - **병렬 조회**: 대시보드는 도시 9곳을 `Promise.allSettled`로 병렬 호출해서, 일부 도시가 실패해도 나머지는 그대로 렌더링합니다. 로딩/에러 상태도 화면에 표시합니다.
 
-### 요구사항 2: OpenWeatherMap API 추가로 기능 확대
+### OpenWeatherMap API 추가로 기능 확대
 
 상세 페이지(`/weather-axios/weather/:cityId`)에 현재 날씨 외에 두 개를 더 붙였습니다.
 
@@ -211,7 +211,7 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 
 예보/대기질은 부가 정보라 `Promise.allSettled`로 감싸서 하나가 실패해도 상세 화면은 뜨게 했고, API가 제공하는 체감온도(`main.feels_like`)를 공식으로 계산한 결과와 나란히 비교할 수 있게 뒀습니다.
 
-### 요구사항 3: 체감온도 활용 — 작업장 관리 (온열/한랭질환 예방)
+### 체감온도 활용 — 작업장 관리 (온열/한랭질환 예방)
 
 `/weather-axios/heat-safety`. 이 앱은 계절별 체감온도를 계산만 하고 숫자로 보여주기만 했는데, "이 숫자를 실제로 뭔가에 쓸 수 없나" 해서 고용노동부의 **온열질환·한랭질환 예방 가이드**를 가져왔습니다. 체감온도 구간별로 사업장이 취해야 하는 조치(휴식 주기, 옥외작업 중지 시간대 등)가 표로 정해져 있어서, 그 표를 그대로 코드로 옮기면 "지금 이 현장은 몇 분 쉬어야 한다"까지 자동으로 나옵니다.
 
@@ -227,3 +227,62 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 처음엔 여름철 = 온열질환만 생각하고 만들었습니다. 그런데 헤더의 계절변경 버튼으로 겨울철로 돌려보니 모든 현장이 "산출 불가"로 떴습니다. 겨울철 체감온도 공식은 기온 10℃ 이하 & 풍속 1.3m/s 이상일 때만 산출되는데, 지금(8월) 실제 기온이 그 조건을 하나도 못 넘으니 당연한 결과였습니다. Weather Store 단계에서 mock에 겨울 도시(태백·철원·봉화)를 억지로 넣어 해결했던 것과 같은 상황인데, 이번엔 실시간 데이터라 그럴 수도 없었습니다.
 
 계절만 바뀌고 아무것도 안 보이는 화면은 의미가 없어서, 겨울철에는 아예 **한랭질환 예방 가이드**(`COLD_STAGES` — 일상적 관리 / 한파 관심·주의보·경보)로 판정 로직을 바꾸도록 확장했습니다. `computeFeelsLike` / `getThermalStage` / `getBasicRules`가 계절값 하나로 온열↔한랭의 계산식·기준표·기본수칙·응급조치를 전부 스위칭합니다. 덕분에 여름엔 폭염 단계, 겨울엔 한파 단계로 같은 화면이 그대로 동작합니다.
+
+---
+
+## Handson: Weather UI Library
+
+외부 UI Library PrimeVue(테마 프리셋 Aura + PrimeIcons)를 골라, 바로 앞 Weather Axios 단계를 재스킨했습니다.
+
+### 적용한 곳
+
+화면 구성은 유지하면서 표현만 PrimeVue로 바꾸고, 텍스트 옆 이모지를 걷어내 그 의미를 컴포넌트로 옮겼습니다.
+
+| 원래                          | 대체 (PrimeVue)                              |
+| ----------------------------- | -------------------------------------------- |
+| 카드 / 패널 박스              | `Card`, `Panel`                              |
+| 위험 단계 뱃지 (`🔥 더움` 등) | `Tag` — 색상 severity                        |
+| 즐겨찾기 `⭐/☆`               | `Button` 아이콘 (`pi-star-fill` / `pi-star`) |
+| 로딩 `⏳` / 경보·안내 `⚠️`    | `ProgressSpinner` / `Message`                |
+| 계절 토글                     | `SelectButton` (여름철·겨울철)               |
+| 도시 검색창                   | `IconField` + `InputText`                    |
+| 단계별 기준 표                | `DataTable` + `Column`                       |
+| 3대 수칙 체크리스트           | `Checkbox` + `ProgressBar`                   |
+| 대기질 지수(AQI)              | `Knob` + `Tag`                               |
+| 작업장 좌표 입력 폼           | `InputText` + `Button`                       |
+| 네비게이션 이모지             | PrimeIcons (`pi-th-large`, `pi-building` 등) |
+
+### 코드 전후 비교 예시(StatusBar)
+
+`div` + scoped CSS를 PrimeVue `Message` 한 줄로 대체하고 스타일 블록을 통째로 지웠습니다.
+
+```vue
+<!-- Before -->
+<template>
+  <div class="status-bar">{{ message }}</div>
+</template>
+<style scoped>
+.status-bar {
+  background: #e6f6e6;
+  color: #2e7d32;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+</style>
+```
+
+```vue
+<!-- After -->
+<script setup>
+import Message from 'primevue/message'
+</script>
+<template>
+  <Message severity="info" :closable="false">{{ message }}</Message>
+</template>
+```
+
+### 계절별 배경 테마
+
+현재 계절에 따라, `assets/weather-ui.css`가 배경색만 바꿉니다 — 여름 `#fdf4e8`(크림), 겨울 `#eaf1f9`(페일 블루). weather-ui 화면을 벗어나면 `onUnmounted`에서 속성을 지워 다른 화면에는 영향이 없습니다.
