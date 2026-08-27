@@ -44,13 +44,13 @@ const practiceLinks = [
 ]
 
 const handsonLinks = [
-  { to: '/practice/weather-mockup', label: '날씨 Mockup' },
-  { to: '/practice/weather-composition', label: '날씨 Composition (computed/watch)' },
-  { to: '/practice/weather-component', label: '날씨 Component 분리' },
-  { to: '/weather-app', label: '날씨 Vue Router 앱' },
-  { to: '/weather-store', label: '날씨 Pinia Store (체감온도)' },
-  { to: '/weather-axios', label: '날씨 Axios (OpenWeatherMap 실시간)' },
-  { to: '/weather-ui', label: '날씨 UI Library (PrimeVue 재스킨)' },
+  { to: '/practice/weather-mockup', label: 'Weather Mockup' },
+  { to: '/practice/weather-composition', label: 'Weather Composition' },
+  { to: '/practice/weather-component', label: 'Weather Component' },
+  { to: '/weather-app', label: 'Weather Router' },
+  { to: '/weather-store', label: 'Weather Store' },
+  { to: '/weather-axios', label: 'Weather Axios' },
+  { to: '/weather-ui', label: 'Weather UI Libraries' },
 ]
 </script>
 
