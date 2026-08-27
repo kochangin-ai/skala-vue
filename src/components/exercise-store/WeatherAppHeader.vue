@@ -1,14 +1,17 @@
-<script setup></script>
+<script setup>
+import SeasonToggler from './SeasonToggler.vue'
+</script>
 
 <template>
   <header class="weather-app-header">
     <nav class="weather-app-nav">
-      <RouterLink to="/weather-app">📊 날씨 대시보드</RouterLink>
+      <RouterLink to="/weather-store">📊 날씨 대시보드</RouterLink>
       <span class="divider">|</span>
-      <RouterLink to="/weather-app/favorites">⭐ 즐겨찾기</RouterLink>
+      <RouterLink to="/weather-store/favorites">⭐ 즐겨찾기</RouterLink>
       <span class="divider">|</span>
-      <RouterLink to="/weather-app/about">ℹ️ 서비스 소개</RouterLink>
+      <RouterLink to="/weather-store/about">ℹ️ 서비스 소개</RouterLink>
     </nav>
+    <SeasonToggler />
   </header>
 </template>
 

@@ -122,4 +122,49 @@ WeatherHomeView.vue는 WeatherParent.vue의 반응형 상태와 로직을 거의
 
 ### 트러블 슈팅: 왜 `/`가 아니라 `/weather-app`인지
 
-과제 요구사항 원문은 WeatherHomeView를 `/` 경로에 두라고 되어 있는데, 저는 `/weather-app`에 뒀습니다. 솔직히 말하면 이 프로젝트의 `/` 경로가 지금까지 실습한 모든 Code Challenge/Handson 링크를 모아둔 야매(?) 홈 화면 역할을 하고 있어서, 여기를 WeatherHomeView로 갈아치우면 지금까지 쌓아온 다른 실습 페이지로 가는 진입로가 전부 없어지는 상황이었습니다. 그래서 기존 라우터 구조를 건드리지 않는 선에서 `/weather-app`을 이번 과제만의 새 루트로 잡고, 그 밑에 `/weather-app/about`, `/weather-app/favorites`, `/weather-app/weather/:cityId`를 매달았습니다. Catch-all Route만 앱 전체에 공통으로 걸리는 전역 라우트라 그대로 뒀습니다.
+과제 요구사항 에서는 WeatherHomeView를 `/` 경로에 두라고 되어 있는데, 저는 `/weather-app`에 뒀습니다. 솔직히 말하면 이 프로젝트의 `/` 경로가 지금까지 실습한 모든 Code Challenge/Handson 링크를 모아둔 야매(?) 홈 화면 역할을 하고 있어서, 여기를 WeatherHomeView로 갈아치우면 지금까지 쌓아온 다른 실습 페이지로 가는 진입로가 전부 없어지는 상황이었습니다. 그래서 기존 라우터 구조를 건드리지 않는 선에서 `/weather-app`을 이번 과제만의 새 루트로 잡고, 그 밑에 `/weather-app/about`, `/weather-app/favorites`, `/weather-app/weather/:cityId`를 매달았습니다. Catch-all Route만 앱 전체에 공통으로 걸리는 전역 라우트라 그대로 뒀습니다.
+
+---
+
+## Handson: Weather Store
+
+`/weather-store` 경로 아래에 Pinia로 상태를 관리하는 버전을 새로 만들었습니다. 과제 예시는 단위(°C/°F) 설정을 `configStore.js`로 관리하는 것이었는데, 저는 그 대신 기상청이 실제로 쓰는 체감온도 산출식을 계절별로 계산해주는 Store를 만들어봤습니다. 여름철은 기온+습도, 겨울철은 기온+풍속을 쓰는 완전히 다른 공식이라 계절이 바뀔 때마다 어떤 공식을 쓸지 상태로 들고 있어야 했고, 이게 마침 Pinia store가 하기 딱 좋은 일이라 생각했습니다.
+
+### feelsLikeStore.js: 계절별 체감온도 계산
+
+`season`이라는 state 하나에 `'summer' | 'winter'`를 담아두고, `calculateFeelsLike(city)`가 이 상태를 보고 두 공식 중 하나를 골라 계산합니다. 여름철 공식은 습구온도(Tw)가 먼저 필요한데, 기상자료개방포털 공식에는 상대습도만 주어져 있어서 Stull(2011)의 근사식으로 습구온도부터 구한 다음 체감온도 공식에 넣었습니다. 겨울철 공식은 기온이 10℃를 넘거나 풍속이 1.3m/s보다 느리면 애초에 산출 대상이 아니라서, 조건을 만족 못 하면 `null`을 반환하도록 했습니다.
+
+```js
+// stores/feelsLikeStore.js
+export const useFeelsLikeStore = defineStore('feelsLike', () => {
+  const season = ref('summer')
+  const setSeason = (value) => {
+    season.value = value
+  }
+
+  const calculateFeelsLike = ({ temp, humidity, windSpeed }) => {
+    if (season.value === 'summer') {
+      const tw = calcWetBulb(temp, humidity) // Stull 근사식
+      return -0.2442 + 0.55399 * tw + 0.45535 * temp - 0.0022 * tw ** 2 + 0.00278 * tw * temp + 3.0
+    }
+    if (temp > 10 || windSpeed < 1.3) return null // 겨울철 산출 조건 미충족
+    const windKmh = windSpeed * 3.6
+    const v016 = Math.pow(windKmh, 0.16)
+    return 13.12 + 0.6215 * temp - 11.37 * v016 + 0.3965 * v016 * temp
+  }
+
+  return { season, setSeason, calculateFeelsLike }
+})
+```
+
+### 메인/상세에 똑같이 적용
+
+WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) 둘 다 `useFeelsLikeStore()`로 store를 직접 구독해서 같은 `calculateFeelsLike()`를 그대로 호출합니다. "메인/상세에 적용하면 코드가 중복되니 Composable로 해결 가능하다(범위 제외)"는 참고가 있었는데, 계산 로직 자체를 store 하나에 몰아넣고 나니 두 화면은 그냥 store를 불러다 쓰기만 하면 돼서 자연스럽게 중복이 생기지 않았습니다.
+
+### 트러블슈팅: 습구온도(Tw)를 구할 방법이 없던 문제
+
+여름철 공식은 기온(Ta)과 습구온도(Tw)가 필요한데, mock 데이터에는 기온과 상대습도(RH%)만 있고 습구온도는 없었습니다. 습구온도를 직접 측정하지 않고 기온과 상대습도만으로 근사할 수 있는 계산식이 필요해서, https://calculator.goldsupplier.com/wet-bulb-temperature-calculator/ 에서 Stull(2011) 근사식을 가져와 `calcWetBulb(ta, rh)` 함수로 구현하고, 그 결과를 여름철 체감온도 공식에 그대로 넣었습니다.
+
+### 트러블슈팅: 겨울철을 선택하면 전부 "산출 불가"로 뜨는 문제
+
+처음엔 버그인 줄 알았는데, mock 데이터를 보니 도시 8곳 온도가 전부 19~33℃라 겨울철 공식의 산출 조건(기온 10℃ 이하)을 하나도 만족하지 못하는 게 정상이었습니다. 그래서 조건을 만족하는 겨울 도시(태백, 철원, 봉화)를 mock 데이터에 3곳 더 추가해서, 겨울철 공식으로 전환해도 실제 계산 결과를 확인할 수 있게 했습니다.

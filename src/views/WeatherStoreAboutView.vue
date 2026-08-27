@@ -1,5 +1,5 @@
 <script setup>
-import WeatherAppHeader from '@/components/exercise/WeatherAppHeader.vue'
+import WeatherAppHeader from '@/components/exercise-store/WeatherAppHeader.vue'
 </script>
 
 <template>
@@ -14,11 +14,11 @@ import WeatherAppHeader from '@/components/exercise/WeatherAppHeader.vue'
     <ul>
       <li>도시 이름으로 검색해서 원하는 지역의 날씨를 바로 찾을 수 있어요</li>
       <li>카드를 눌러 기온, 습도, 풍속 같은 상세 기상 정보를 확인할 수 있어요</li>
+      <li>계절(여름철/겨울철) 공식에 따라 실제 체감온도가 몇 도인지 계산해서 보여줘요</li>
       <li>즐겨찾기한 도시는 언제든 즐겨찾기 탭에서 다시 모아볼 수 있어요</li>
-      <li>검색 중이던 도시는 새로고침하거나 링크를 공유해도 그대로 유지돼요</li>
     </ul>
 
-    <RouterLink to="/weather-app" class="back-button">대시보드 홈으로 이동</RouterLink>
+    <RouterLink to="/weather-store" class="back-button">대시보드 홈으로 이동</RouterLink>
   </div>
 </template>
 

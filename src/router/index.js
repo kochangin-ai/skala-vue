@@ -214,6 +214,28 @@ const router = createRouter({
       name: 'weather-app-detail',
       component: () => import('../views/WeatherDetailView.vue'),
     },
+    // Pinia 실습: Weather Router(WeatherHomeView/WeatherDetailView)를 기반으로 분리 복제한 별도 페이지
+    // (components/exercise-store/ + stores/feelsLikeStore.js), Weather Router 쪽 파일은 건드리지 않음
+    {
+      path: '/weather-store',
+      name: 'weather-store-home',
+      component: () => import('../views/WeatherStoreHomeView.vue'),
+    },
+    {
+      path: '/weather-store/favorites',
+      name: 'weather-store-favorites',
+      component: () => import('../views/WeatherStoreFavoritesView.vue'),
+    },
+    {
+      path: '/weather-store/about',
+      name: 'weather-store-about',
+      component: () => import('../views/WeatherStoreAboutView.vue'),
+    },
+    {
+      path: '/weather-store/weather/:cityId',
+      name: 'weather-store-detail',
+      component: () => import('../views/WeatherStoreDetailView.vue'),
+    },
     // Catch-all Route: 정의되지 않은 모든 경로를 404 페이지로 처리 (반드시 routes 배열 마지막에 위치)
     {
       path: '/:pathMatch(.*)*',
