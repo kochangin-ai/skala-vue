@@ -176,7 +176,7 @@ export const useFeelsLikeStore = defineStore('feelsLike', () => {
 
 ### 메인/상세에 똑같이 적용
 
-WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) 둘 다 `useFeelsLikeStore()`로 store를 직접 구독해서 같은 `calculateFeelsLike()`를 그대로 호출합니다. "메인/상세에 적용하면 코드가 중복되니 Composable로 해결 가능하다(범위 제외)"는 참고가 있었는데, 계산 로직 자체를 store 하나에 몰아넣고 나니 두 화면은 그냥 store를 불러다 쓰기만 하면 돼서 자연스럽게 중복이 생기지 않았습니다.
+WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) 둘 다 `useFeelsLikeStore()`로 store를 직접 구독해서 같은 `calculateFeelsLike()`를 그대로 호출합니다. 계산 로직 자체를 store 하나에 몰아넣고 나니 두 화면은 그냥 store를 불러다 쓰기만 하면 돼서 자연스럽게 중복이 생기지 않았습니다.
 
 ### 트러블슈팅: 습구온도(Tw)를 구할 방법이 없던 문제
 
@@ -190,15 +190,15 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 
 ## Handson: Weather Axios
 
-1. **실제 날씨 데이터 적용** — Weather Store까지 쓰던 가짜 도시 데이터를 걷어내고 OpenWeatherMap 실시간 데이터로 전면 교체했습니다.
-2. **OpenWeatherMap API 추가로 기능 확대** — 현재 날씨에 더해 예보 / 대기질 API를 붙였습니다.
-3. **체감온도 활용 + 외부 위치 API** — 앱이 계산만 하던 체감온도를 온열질환·한랭질환 정부 예방 가이드에 연결하고, 브라우저 위치 API로 사용자가 자기 현재 위치를 작업장으로 등록해 예방 조치를 확인할 수 있게 했습니다.
+1. **실제 날씨 데이터 적용** : Weather Store까지 쓰던 가짜 도시 데이터를 걷어내고 OpenWeatherMap 실시간 데이터로 전면 교체했습니다.
+2. **OpenWeatherMap API 추가로 기능 확대** : 현재 날씨에 더해 예보 / 대기질 API를 붙였습니다.
+3. **체감온도 활용 + 외부 위치 API** : 앱이 계산만 하던 체감온도를 온열질환·한랭질환 정부 예방 가이드에 연결하고, 브라우저 위치 API로 사용자가 자기 현재 위치를 작업장으로 등록해 예방 조치를 확인할 수 있게 했습니다.
 
 ### 실제 날씨 데이터 적용 (목업데이터 → API)
 
 지금까지 `weatherMockData` 상수를 그대로 화면에 뿌렸는데, 이번엔 그 자리를 전부 OpenWeatherMap 응답으로 대체했습니다.
 
-- **API 계층 분리**: 코드 챌린지(`AxiosWeather.vue`)에서 연습한 axios 호출을 `api/openWeatherApi.js`로 옮기고, `axios.create()`로 `baseURL` + 공용 파라미터(`appid` / `units=metric` / `lang=kr`)를 물린 인스턴스를 만들어 호출부 중복을 없앴습니다.
+- **API 계층 분리**: 코드 챌린지에서 연습한 axios 호출을 `api/openWeatherApi.js`로 옮기고, `axios.create()`로 `baseURL` + 공용 파라미터(`appid` / `units=metric` / `lang=kr`)를 물린 인스턴스를 만들어 호출부 중복을 없앴습니다.
 - **응답 normalize**: OpenWeatherMap 응답을 이전 단계 화면이 그대로 쓰던 도시 객체(`{ temp, status, humidity, windSpeed, ... }`) 형태로 변환합니다. `temp/humidity/windSpeed` 키를 유지한 덕분에 `feelsLikeAxiosStore.calculateFeelsLike()`(계절별 체감온도)를 한 줄도 안 고치고 재사용했습니다.
 - **병렬 조회**: 대시보드는 도시 9곳을 `Promise.allSettled`로 병렬 호출해서, 일부 도시가 실패해도 나머지는 그대로 렌더링합니다. 로딩/에러 상태도 화면에 표시합니다.
 
@@ -211,7 +211,7 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 
 예보/대기질은 부가 정보라 `Promise.allSettled`로 감싸서 하나가 실패해도 상세 화면은 뜨게 했고, API가 제공하는 체감온도(`main.feels_like`)를 공식으로 계산한 결과와 나란히 비교할 수 있게 뒀습니다.
 
-### 체감온도 활용 — 작업장 관리 (온열/한랭질환 예방)
+### 외부 API 활용 및 체감온도 활용 — 작업장 관리 (온열/한랭질환 예방)
 
 `/weather-axios/heat-safety`. 이 앱은 계절별 체감온도를 계산만 하고 숫자로 보여주기만 했는데, "이 숫자를 실제로 뭔가에 쓸 수 없나" 해서 고용노동부의 **온열질환·한랭질환 예방 가이드**를 가져왔습니다. 체감온도 구간별로 사업장이 취해야 하는 조치(휴식 주기, 옥외작업 중지 시간대 등)가 표로 정해져 있어서, 그 표를 그대로 코드로 옮기면 "지금 이 현장은 몇 분 쉬어야 한다"까지 자동으로 나옵니다.
 
@@ -287,10 +287,6 @@ import Message from 'primevue/message'
 
 현재 계절에 따라, `assets/weather-ui.css`가 배경색만 바꿉니다 — 여름 `#fdf4e8`(크림), 겨울 `#eaf1f9`(페일 블루). weather-ui 화면을 벗어나면 `onUnmounted`에서 속성을 지워 다른 화면에는 영향이 없습니다.
 
-### 반응형 레이아웃 정리
-
-화면이 왼쪽으로 쏠려 보이는 문제가 있었습니다. Vite Vue 스타터 기본 CSS(`assets/main.css`)가 `1024px` 이상에서 `#app`을 `grid-template-columns: 1fr 1fr` 2열로 만들고 `body { display: flex }`로 가운데 정렬까지 깨고 있었기 때문입니다(원래 스타터의 2단 환영 화면용). 이 블록을 지우고 `#app`을 `max-width: 1100px` + `margin: 0 auto` + `padding: clamp(16px, 3vw, 32px)`로 바꿔, 모든 페이지가 화면 폭에 맞춰 가운데 정렬되고 여백이 반응형으로 조절되도록 했습니다.
-
 ---
 
 ## Weather Deployment
@@ -303,6 +299,6 @@ import Message from 'primevue/message'
 ### Build & Deployment
 
 1. **Build**: `npm run build` → `dist/`에 정적 파일 생성. 로컬에서 `npm run preview`로 프로덕션 빌드의 라우팅·API 동작을 확인했습니다.
-2. **Hosting**: **Vercel**에 배포했습니다. GitHub 리포를 연결해 `main` push마다 자동 빌드(`npm run build`) / 배포되며, `dist/`가 정적 파일로 서빙됩니다. SPA(`createWebHistory`)라 모든 경로를 `index.html`로 되돌리는 fallback은 Vercel이 Vite 프로젝트에 자동 적용하고, `VITE_OPENWEATHER_API_KEY`는 Vercel 프로젝트 환경 변수(Production·Preview)로 등록했습니다.
+2. **Hosting**: **Vercel**을 통해서 배포했습니다. GitHub 레포지토리를 연결해 `main` push마다 자동 빌드(`npm run build`) / 배포되며, `dist/`가 정적 파일로 서빙됩니다. SPA(`createWebHistory`)라 모든 경로를 `index.html`로 되돌리는 fallback은 Vercel이 Vite 프로젝트에 자동 적용하고, `VITE_OPENWEATHER_API_KEY`는 Vercel 프로젝트 환경 변수(Production·Preview)로 등록했습니다.
 
 - 배포 URL: <https://skala-vue-two-liart.vercel.app/>
