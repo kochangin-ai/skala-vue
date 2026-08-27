@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import HeatStageBadge from './HeatStageBadge.vue'
+import FavoriteButton from '../FavoriteButton.vue'
 import { computeFeelsLike, getThermalStage } from '@/heat/heatIndex'
 import { useFeelsLikeUiStore } from '@/stores/feelsLikeUiStore'
 
@@ -33,6 +34,7 @@ const stage = computed(() => getThermalStage(store.season, feelsLike.value))
   >
     <template #title>
       <div class="site-title">
+        <FavoriteButton :id="entry.worksite.id" />
         <span class="name">{{ entry.worksite.name }}</span>
         <HeatStageBadge v-if="weather" :stage="stage" />
         <span v-else class="fail">조회 실패</span>

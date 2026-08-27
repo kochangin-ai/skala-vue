@@ -1,6 +1,6 @@
 <script setup>
 // HeatSafetyHomeView 를 PrimeVue 로 재스킨. 로직 동일, 이모지 제거, 경보는 Message 로.
-import { ref, computed, watch } from 'vue'
+import { ref, readonly, computed, watch, provide } from 'vue'
 import { useRouter } from 'vue-router'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -13,6 +13,7 @@ import { fetchWorksiteWeatherList } from '@/api/openWeatherApi'
 import { computeFeelsLike, getThermalStage } from '@/heat/heatIndex'
 import { useWorksiteUiStore } from '@/stores/worksiteUiStore'
 import { useFeelsLikeUiStore } from '@/stores/feelsLikeUiStore'
+import { useFavoriteCitiesUi } from '@/composables/useFavoriteCitiesUi'
 import { useSeasonTheme } from '@/composables/useSeasonTheme'
 
 useSeasonTheme()
@@ -20,6 +21,12 @@ useSeasonTheme()
 const router = useRouter()
 const store = useWorksiteUiStore()
 const seasonStore = useFeelsLikeUiStore()
+
+// 작업장 관리 탭에서도 즐겨찾기 가능하도록 (SiteRiskCard 안의 FavoriteButton이 inject로 사용)
+// 즐겨찾기는 worksite.id 기준으로 저장된다 (도시=default-*, 작업장=user-*)
+const { favoriteCities, toggleFavorite } = useFavoriteCitiesUi()
+provide('favoriteCities', readonly(favoriteCities))
+provide('toggleFavorite', toggleFavorite)
 
 const isWinter = computed(() => seasonStore.season === 'winter')
 const illnessLabel = computed(() => (isWinter.value ? '한랭질환' : '온열질환'))
@@ -46,12 +53,26 @@ const loadAll = async (worksites) => {
 
 watch(() => store.allWorksites, (list) => loadAll(list), { immediate: true, deep: true })
 
+// 카드 상위노출 순서: 즐겨찾기 된 작업장 → 즐겨찾기 된 도시 → 작업장 → 도시
+// (같은 그룹 안에서는 위험 단계 높은 순, 그다음 체감온도 순)
+const groupRank = (worksite) => {
+  const fav = favoriteCities.value.includes(worksite.id)
+  const isWorksite = worksite.source !== 'default' // default-* = 도시, user/geo = 작업장
+  if (fav && isWorksite) return 0
+  if (fav && !isWorksite) return 1
+  if (isWorksite) return 2
+  return 3
+}
+
 const rankedEntries = computed(() => {
   const withStage = entries.value.map((entry) => {
     const feelsLike = entry.weather ? computeFeelsLike(seasonStore.season, entry.weather) : null
     return { entry, feelsLike, stage: getThermalStage(seasonStore.season, feelsLike) }
   })
   return withStage.sort((a, b) => {
+    const ga = groupRank(a.entry.worksite)
+    const gb = groupRank(b.entry.worksite)
+    if (ga !== gb) return ga - gb
     if (b.stage.level !== a.stage.level) return b.stage.level - a.stage.level
     const af = a.feelsLike ?? 0
     const bf = b.feelsLike ?? 0
@@ -59,8 +80,12 @@ const rankedEntries = computed(() => {
   })
 })
 
+// 최고 위험 배너는 정렬 순서와 무관하게 가장 위험한 현장을 찾는다
 const topAlert = computed(() => {
-  const worst = rankedEntries.value[0]
+  const worst = rankedEntries.value.reduce(
+    (acc, cur) => (acc && acc.stage.level >= cur.stage.level ? acc : cur),
+    null,
+  )
   return worst && worst.stage.level >= 1 ? worst : null
 })
 
