@@ -236,6 +236,17 @@ const router = createRouter({
       name: 'weather-store-detail',
       component: () => import('../views/WeatherStoreDetailView.vue'),
     },
+    // Code Challenge: Axios 라이브러리 실습 (CRUD 프로토타입 / 실시간 날씨 통신)
+    {
+      path: '/practice/axios-json',
+      name: 'practice-axios-json',
+      component: () => import('../components/practices/basic/library/AxiosJson.vue'),
+    },
+    {
+      path: '/practice/axios-weather',
+      name: 'practice-axios-weather',
+      component: () => import('../components/practices/basic/library/AxiosWeather.vue'),
+    },
     // Catch-all Route: 정의되지 않은 모든 경로를 404 페이지로 처리 (반드시 routes 배열 마지막에 위치)
     {
       path: '/:pathMatch(.*)*',

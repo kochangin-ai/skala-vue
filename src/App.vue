@@ -36,6 +36,9 @@ const practiceLinks = [
   { to: '/practice/slot-default', label: 'Default Slot' },
   { to: '/practice/slot-named', label: 'Named Slot' },
   { to: '/practice/slot-scoped', label: 'Scoped Slot' },
+  // Code Challenge: Axios 라이브러리
+  { to: '/practice/axios-json', label: 'Axios CRUD (JSONPlaceholder)' },
+  { to: '/practice/axios-weather', label: 'Axios 실시간 날씨' },
 ]
 
 const handsonLinks = [
