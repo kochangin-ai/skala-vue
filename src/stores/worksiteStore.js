@@ -72,8 +72,8 @@ export const useWorksiteStore = defineStore('worksite', () => {
 
   const toggleCheck = (siteId, ruleKey) => {
     const day = todayKey()
-    const dayMap = { ...(checklist.value[day] ?? {}) }
-    const siteMap = { ...(dayMap[siteId] ?? {}) }
+    const dayMap = { ...checklist.value[day] }
+    const siteMap = { ...dayMap[siteId] }
     siteMap[ruleKey] = !siteMap[ruleKey]
     dayMap[siteId] = siteMap
     checklist.value = { ...checklist.value, [day]: dayMap }

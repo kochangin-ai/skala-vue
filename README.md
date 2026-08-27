@@ -4,7 +4,7 @@ skala vue 연습 공간입니다.
 
 ---
 
-## Handson: WeatherMockup
+## Handson: Weather Mockup
 
 `src/components/practices/basic/handson/WeatherMockup.vue`를 실습하면서 아래 내용을 하나씩 추가했습니다.
 
@@ -15,7 +15,7 @@ skala vue 연습 공간입니다.
 
 ---
 
-## Handson: WeatherComposition
+## Handson: Weather Composition
 
 `src/components/practices/basic/handson/WeatherComposition.vue`는 WeatherMockup을 기반으로 이어서 만든 컴포넌트입니다. 아래 내용을 하나씩 추가했습니다.
 
@@ -70,7 +70,7 @@ watch(favoriteCities, (newList) => {
 
 ---
 
-## Handson: WeatherComponent (컴포넌트 분리)
+## Handson: Weather Component
 
 `src/components/practices/basic/handson/WeatherParent.vue`는 WeatherComposition 하나에 몰려있던 코드를 기능 변경 없이 여러 컴포넌트로 쪼갠 버전입니다.
 
@@ -230,7 +230,7 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 
 ---
 
-## Handson: Weather UI Library
+## Handson: Weather UI Libraries
 
 외부 UI Library PrimeVue(테마 프리셋 Aura + PrimeIcons)를 골라, 바로 앞 Weather Axios 단계를 재스킨했습니다.
 
@@ -286,3 +286,23 @@ import Message from 'primevue/message'
 ### 계절별 배경 테마
 
 현재 계절에 따라, `assets/weather-ui.css`가 배경색만 바꿉니다 — 여름 `#fdf4e8`(크림), 겨울 `#eaf1f9`(페일 블루). weather-ui 화면을 벗어나면 `onUnmounted`에서 속성을 지워 다른 화면에는 영향이 없습니다.
+
+### 반응형 레이아웃 정리
+
+화면이 왼쪽으로 쏠려 보이는 문제가 있었습니다. Vite Vue 스타터 기본 CSS(`assets/main.css`)가 `1024px` 이상에서 `#app`을 `grid-template-columns: 1fr 1fr` 2열로 만들고 `body { display: flex }`로 가운데 정렬까지 깨고 있었기 때문입니다(원래 스타터의 2단 환영 화면용). 이 블록을 지우고 `#app`을 `max-width: 1100px` + `margin: 0 auto` + `padding: clamp(16px, 3vw, 32px)`로 바꿔, 모든 페이지가 화면 폭에 맞춰 가운데 정렬되고 여백이 반응형으로 조절되도록 했습니다.
+
+---
+
+## Weather Deployment
+
+### Source Code 품질 관리
+
+1. **ESLint 점검**: `npm run lint`(oxlint + eslint)로 전체를 점검해 Error 0을 유지했습니다.
+2. **API 키 환경 변수 분리**: OpenWeatherMap 키는 `.env`의 `VITE_OPENWEATHER_API_KEY`로 두고 `import.meta.env`로 주입합니다. `.gitignore`에 `.env`, `.env.*`(단, `!.env.example` 예외)를 등록해 Git에 올라가지 않도록 했고, `.env.example`만 커밋했습니다.
+
+### Build & Deployment
+
+1. **Build**: `npm run build` → `dist/`에 정적 파일 생성. 로컬에서 `npm run preview`로 프로덕션 빌드의 라우팅·API 동작을 확인했습니다.
+2. **Hosting**: **Vercel**에 배포했습니다. GitHub 리포를 연결해 `main` push마다 자동 빌드(`npm run build`) / 배포되며, `dist/`가 정적 파일로 서빙됩니다. SPA(`createWebHistory`)라 모든 경로를 `index.html`로 되돌리는 fallback은 Vercel이 Vite 프로젝트에 자동 적용하고, `VITE_OPENWEATHER_API_KEY`는 Vercel 프로젝트 환경 변수(Production·Preview)로 등록했습니다.
+
+- 배포 URL: <https://skala-vue-two-liart.vercel.app/>

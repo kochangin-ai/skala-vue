@@ -7,7 +7,7 @@ import 'element-plus/dist/index.css'
 
 // Handson: Weather UI Library — PrimeVue(+ 아이콘/계절 배경 테마)
 import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
+import Aura from '@primevue/themes/aura'
 import 'primeicons/primeicons.css'
 import './assets/weather-ui.css'
 

@@ -18,7 +18,7 @@
     "element-plus": "^2.14.5",
     "pinia": "^3.0.4",
     "primeicons": "^8.0.0",
-    "primevue": "^5.0.1",
+    "primevue": "^4.5.5",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   },
