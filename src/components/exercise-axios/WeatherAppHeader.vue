@@ -13,7 +13,7 @@ import SeasonToggler from './SeasonToggler.vue'
         <span class="divider">|</span>
         <RouterLink to="/weather-axios/about">ℹ️ 서비스 소개</RouterLink>
         <span class="divider">|</span>
-        <RouterLink to="/weather-axios/heat-safety">🏗️ 작업장 관리</RouterLink>
+        <RouterLink to="/weather-axios/heat-safety" class="nav-heat">🏗️ 작업장 관리</RouterLink>
         <SeasonToggler />
       </nav>
     </div>
@@ -53,6 +53,13 @@ import SeasonToggler from './SeasonToggler.vue'
 }
 
 .weather-app-nav a.router-link-exact-active {
+  color: #2f6fed;
+  border-bottom-color: #2f6fed;
+  font-weight: bold;
+}
+
+/* 작업장 관리 하위 페이지(about/site)에 있어도 상단 링크는 계속 활성으로 보이게 */
+.weather-app-nav a.nav-heat.router-link-active {
   color: #2f6fed;
   border-bottom-color: #2f6fed;
   font-weight: bold;

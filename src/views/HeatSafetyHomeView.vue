@@ -115,7 +115,7 @@ const handleRemove = (id) => {
 
 <style scoped>
 .heat-page {
-  max-width: 520px;
+  max-width: 500px;
   margin: 20px auto;
   font-family: sans-serif;
 }

@@ -74,7 +74,7 @@ const tempText = (stage) =>
 
 <style scoped>
 .heat-page {
-  max-width: 520px;
+  max-width: 500px;
   margin: 20px auto;
   font-family: sans-serif;
   line-height: 1.6;

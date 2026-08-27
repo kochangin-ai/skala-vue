@@ -1,8 +1,10 @@
 <script setup>
-// exercise-axios/heat-safety/HeatAppHeader 를 PrimeVue 스타일로. 이모지 대신 아이콘 + Tag.
+// 작업장 관리 화면들이 공유하는 헤더.
+// 같은 Weather UI handson이라 최상단은 공통 WeatherAppHeader를 그대로 쓰고,
+// 그 아래 작업장 관리 전용 서브 내비만 한 줄 덧붙인다. (계절 토글은 상단 헤더에 이미 있음)
 import { computed } from 'vue'
 import Tag from 'primevue/tag'
-import SeasonToggler from '../SeasonToggler.vue'
+import WeatherAppHeader from '@/components/exercise-ui/WeatherAppHeader.vue'
 import { useFeelsLikeUiStore } from '@/stores/feelsLikeUiStore'
 
 const store = useFeelsLikeUiStore()
@@ -11,48 +13,38 @@ const isWinter = computed(() => store.season === 'winter')
 const links = [
   { to: '/weather-ui/heat-safety', icon: 'pi pi-building', label: '현장 현황' },
   { to: '/weather-ui/heat-safety/about', icon: 'pi pi-info-circle', label: '단계별 기준' },
-  { to: '/weather-ui', icon: 'pi pi-arrow-left', label: '날씨 대시보드' },
 ]
 </script>
 
 <template>
-  <header class="heat-header">
-    <div class="heat-header-top">
+  <div>
+    <WeatherAppHeader />
+    <nav class="heat-subnav">
       <Tag
         :value="isWinter ? '한랭질환 예방' : '온열질환 예방'"
         :severity="isWinter ? 'info' : 'warn'"
         :icon="isWinter ? 'pi pi-cloud' : 'pi pi-sun'"
       />
-      <SeasonToggler />
-    </div>
-    <nav class="heat-nav">
+      <span class="spacer" />
       <RouterLink v-for="link in links" :key="link.to" :to="link.to" class="heat-nav-link">
         <i :class="link.icon" />
         <span>{{ link.label }}</span>
       </RouterLink>
     </nav>
-  </header>
+  </div>
 </template>
 
 <style scoped>
-.heat-header {
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--p-content-border-color);
-}
-
-.heat-header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.heat-nav {
+.heat-subnav {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 16px;
+}
+
+.spacer {
+  flex: 1;
 }
 
 .heat-nav-link {

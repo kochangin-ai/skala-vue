@@ -1,6 +1,12 @@
 <script setup>
 // exercise-axios/WeatherAppHeader 를 PrimeVue 스타일로. 이모지 대신 PrimeIcons.
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import SeasonToggler from './SeasonToggler.vue'
+
+const route = useRoute()
+// 작업장 관리 하위 페이지(about/site)에서도 상단 링크는 계속 활성으로 보이게
+const inHeatSection = computed(() => route.path.startsWith('/weather-ui/heat-safety'))
 
 const links = [
   { to: '/weather-ui', icon: 'pi pi-th-large', label: '날씨 대시보드' },
@@ -13,7 +19,13 @@ const links = [
 <template>
   <header class="wui-header">
     <nav class="wui-nav">
-      <RouterLink v-for="link in links" :key="link.to" :to="link.to" class="wui-nav-link">
+      <RouterLink
+        v-for="link in links"
+        :key="link.to"
+        :to="link.to"
+        class="wui-nav-link"
+        :class="{ 'section-active': link.to === '/weather-ui/heat-safety' && inHeatSection }"
+      >
         <i :class="link.icon" />
         <span>{{ link.label }}</span>
       </RouterLink>
@@ -55,7 +67,8 @@ const links = [
   background: var(--p-content-hover-background);
 }
 
-.wui-nav-link.router-link-exact-active {
+.wui-nav-link.router-link-exact-active,
+.wui-nav-link.section-active {
   color: var(--p-primary-color);
   background: var(--p-highlight-background);
   font-weight: 700;

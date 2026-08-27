@@ -1,9 +1,3 @@
-# skala-vue
-
-skala vue 연습 공간입니다.
-
----
-
 ## Handson: Weather Mockup
 
 `src/components/practices/basic/handson/WeatherMockup.vue`를 실습하면서 아래 내용을 하나씩 추가했습니다.
@@ -20,9 +14,9 @@ skala vue 연습 공간입니다.
 `src/components/practices/basic/handson/WeatherComposition.vue`는 WeatherMockup을 기반으로 이어서 만든 컴포넌트입니다. 아래 내용을 하나씩 추가했습니다.
 
 - **즐겨찾기 기능**: 카드마다 별 아이콘을 눌러 즐겨찾기를 토글하는 기능을 추가했습니다.
-  - 반응형 상태: 즐겨찾기한 도시 id를 담는 `favoriteCities` ref를 새로 선언했습니다.
-  - computed: `favoriteWeatherList`로 즐겨찾기된 도시 정보만 따로 뽑아서 목록 헤더에 즐겨찾기 개수를 보여줍니다.
-  - watcher: `favoriteCities`를 `watch`로 감시해서 즐겨찾기 목록이 바뀔 때마다 콘솔 로그를 남기도록 했습니다.
+  - **반응형 상태**: 즐겨찾기한 도시 id를 담는 `favoriteCities` ref를 새로 선언했습니다.
+  - **computed**: `favoriteWeatherList`로 즐겨찾기된 도시 정보만 따로 뽑아서 목록 헤더에 즐겨찾기 개수를 보여줍니다.
+  - **watcher**: `favoriteCities`를 `watch`로 감시해서 즐겨찾기 목록이 바뀔 때마다 콘솔 로그를 남기도록 했습니다.
 
 ```js
 // 반응형 상태: 즐겨찾기한 도시 id 목록
@@ -62,21 +56,21 @@ watch(favoriteCities, (newList) => {
 
 즐겨찾기 버튼을 눌러도 카드 순서가 그대로였습니다. 원인을 보니 `filteredWeatherList` computed가 `searchQuery`와 `weatherList`만 읽고 있었습니다. 그래서 Vue 입장에서는 이 computed가 `favoriteCities`와는 아무 연관이 없는 값이었습니다. computed는 함수 내부에서 실제로 `.value`를 읽은 반응형 변수만 의존성으로 추적하기 때문에, 즐겨찾기 상태가 바뀌어도 재계산이 트리거되지 않았던 것입니다.
 
-해결은 `filteredWeatherList` 내부에서 정렬 로직을 추가하면서, 정렬 기준으로 `favoriteCities.value.includes(...)`를 직접 읽게 만든 것이었습니다. 이 한 줄이 추가되자 computed가 `favoriteCities`도 자동으로 의존성에 포함시켰습니다. 그 결과 즐겨찾기를 토글할 때마다 `filteredWeatherList`가 다시 계산되면서 즐겨찾기된 카드가 자연스럽게 맨 위로 정렬됐습니다.
+해결은 `filteredWeatherList` 내부에 정렬 로직을 추가하면서, 정렬 기준으로 `favoriteCities.value.includes(...)`를 직접 읽게 만든 것이었습니다. 이 한 줄이 추가되자 computed가 `favoriteCities`도 자동으로 의존성에 포함시켰습니다. 그 결과 즐겨찾기를 토글할 때마다 `filteredWeatherList`가 다시 계산되면서 즐겨찾기된 카드가 자연스럽게 맨 위로 정렬됐습니다.
 
 ### CSS 분리: 공통/외부 CSS 적용 방법
 
-프로젝트 전체 공통 스타일은 `main.js`에 등록하고, 특정 컴포넌트 전용 스타일은 `<style>` 안에서 `@import`로 가져온다는 방식을 적용해봤습니다. WeatherComposition은 WeatherMockup을 기반으로 이어서 만든 컴포넌트라, 애초에 같은 기반 위에서 출발한 만큼 `<style>` 블록도 공통된 부분이 많았습니다. 그래서 두 컴포넌트가 공유하는 기반 스타일은 `weather-card.css`로 뽑아서 같이 import했습니다. 즐겨찾기처럼 새로 추가한 스타일만 `weather-composition.css`로 따로 뒀습니다. `@import`는 `scoped` 안에서는 효과가 없다는 걸 알게 되어 `scoped`는 지우고 사용했습니다.
+프로젝트 전체 공통 스타일은 `main.js`에 등록하고, 특정 컴포넌트 전용 스타일은 `<style>` 안에서 `@import`로 가져오는 방식을 적용해봤습니다. WeatherComposition은 WeatherMockup을 기반으로 이어서 만든 컴포넌트라, 같은 기반 위에서 출발한 만큼 `<style>` 블록도 공통된 부분이 많았습니다. 그래서 두 컴포넌트가 공유하는 기반 스타일은 `weather-card.css`로 뽑아서 같이 import했고, 즐겨찾기처럼 새로 추가한 스타일만 `weather-composition.css`로 따로 뒀습니다. `@import`는 `scoped` 안에서는 효과가 없다는 걸 알게 되어 `scoped`는 지우고 사용했습니다.
 
 ---
 
 ## Handson: Weather Component
 
-`src/components/practices/basic/handson/WeatherParent.vue`는 WeatherComposition 하나에 몰려있던 코드를 기능 변경 없이 여러 컴포넌트로 쪼갠 버전입니다.
+`src/components/practices/basic/handson/WeatherParent.vue`는 WeatherComposition 하나에 몰려 있던 코드를 기능 변경 없이 여러 컴포넌트로 쪼갠 버전입니다.
 
 ### 요구사항대로 나눈 4개 컴포넌트
 
-- **WeatherParent.vue**: 도시 목록, 검색어, 즐겨찾기 등 모든 반응형 상태와 로직을 그대로 들고 있습니다. 자식 컴포넌트들은 표시와 이벤트 전달만 담당하고, 실제 상태 변경은 전부 여기서 처리합니다.
+- **WeatherParent.vue**: 도시 목록, 검색어, 즐겨찾기 등 모든 반응형 상태와 로직을 그대로 들고 있습니다. 자식 컴포넌트는 표시와 이벤트 전달만 담당하고, 실제 상태 변경은 전부 여기서 처리합니다.
 - **BaseDashboardCard.vue**: 검색박스/리스트박스가 배경, 둥근 모서리, 여백까지 똑같은 디자인을 쓰고 있길래 공통 카드 레이아웃으로 뽑았습니다. `title` prop과 기본 슬롯만 있고, 실제 내용은 slot으로 부모가 채워 넣습니다.
 - **SearchBar.vue**: 검색어를 표시만 하고, 입력/엔터가 발생하면 `update-query` / `search` 이벤트로 부모에게 알립니다.
 - **WeatherCard.vue**: 도시 하나의 정보를 표시하고, 카드 선택/상세보기 동작을 각각 `select-card` / `click-detail` 이벤트로 부모에게 올려보냅니다. 즐겨찾기는 아래 Provide/Inject 항목처럼 WeatherCard를 거치지 않고 별도로 처리됩니다.
@@ -90,7 +84,7 @@ watch(favoriteCities, (newList) => {
 
 처음엔 `getWeatherIcon` 함수를 WeatherParent가 provide하고 WeatherCard가 inject하는 식으로 짜봤는데, 생각해보니 WeatherCard는 slot 내용이라 BaseDashboardCard를 거치지 않고 WeatherParent 스코프에서 바로 컴파일되는 직계 자식이었습니다. 즉 몇 단계를 건너뛰는 상황이 아니라 그냥 props를 대체한 것뿐이라 provide/inject를 억지로 쓴 셈이었습니다.
 
-그래서 진짜로 조상 손자 관계인 지점을 찾아서 옮겼습니다. `FavoriteButton.vue`는 WeatherCard의 진짜 자식(WeatherParent 기준으로는 손자)이라, 여기서 WeatherCard를 건너뛰고 최상위 WeatherParent의 즐겨찾기 상태(`favoriteCities`)와 변경 함수(`toggleFavorite`)를 직접 주입받도록 바꿨습니다. FavoriteButton은 이제 도시 `id`만 prop으로 받고, 즐겨찾기 여부 판단과 토글 요청을 전부 inject한 값으로 직접 처리합니다. 대신 `getWeatherIcon`은 원래대로 WeatherParent → WeatherCard에 평범한 prop으로 내렸습니다.
+그래서 진짜로 조상-손자 관계인 지점을 찾아서 옮겼습니다. `FavoriteButton.vue`는 WeatherCard의 진짜 자식(WeatherParent 기준으로는 손자)이라, 여기서 WeatherCard를 건너뛰고 최상위 WeatherParent의 즐겨찾기 상태(`favoriteCities`)와 변경 함수(`toggleFavorite`)를 직접 주입받도록 바꿨습니다. FavoriteButton은 이제 도시 `id`만 prop으로 받고, 즐겨찾기 여부 판단과 토글 요청을 전부 inject한 값으로 직접 처리합니다. 대신 `getWeatherIcon`은 원래대로 WeatherParent → WeatherCard에 평범한 prop으로 내렸습니다.
 
 ```js
 // WeatherParent.vue
@@ -108,6 +102,7 @@ const isFavorite = computed(() => favoriteCities.value.includes(props.id))
 ### 컴포넌트 간 Props / Emit 흐름
 
 https://mermaid.ai/app/dashboard 를 이용해서 각 컴포넌트 간 흐름도를 작성했습니다.
+
 ![WeatherComponent props/emit/provide 흐름도](readmesrc/WeatherComponent.png)
 
 ---
@@ -116,13 +111,22 @@ https://mermaid.ai/app/dashboard 를 이용해서 각 컴포넌트 간 흐름도
 
 `/weather-app` 경로 아래에 WeatherComponent를 Vue Router 기반 다중 페이지 구조로 확장한 버전입니다.
 
-라우터 지연 로딩은 원래 `src/router/index.js`에 있던 모든 라우트가 이미 `component: () => import(...)` 형태였어서, 새로 추가한 `/weather-app` 계열 라우트도 그 관례를 그대로 따라 지연 로딩으로 등록했습니다. Catch-all Route는 `/:pathMatch(.*)*` 패턴으로 `NotFoundView.vue`를 연결했고, Vue Router는 routes 배열에 등록된 순서대로 매칭을 시도하기 때문에 이 라우트를 배열 맨 마지막에 둬서 다른 라우트에 안 걸리는 경로만 여기로 떨어지게 했습니다. App.vue의 Navigation Bar와 `<RouterView />`는 이미 처음부터 있던 구조라 손댈 게 없었고, 이번엔 Handson 목록에 "날씨 Vue Router 앱" 링크 하나만 추가해서 진입점을 열어뒀습니다.
+### 라우트 등록
 
-WeatherHomeView.vue는 WeatherParent.vue의 반응형 상태와 로직을 거의 그대로 옮겨왔고, 상세보기 버튼을 눌렀을 때 기존의 `window.alert()` 호출을 지우고 `router.push()`로 상세 페이지(`/weather-app/weather/:cityId`)로 이동하도록 바꿨습니다. WeatherDetailView.vue는 `onMounted` 시점에 라우트 파라미터 `route.params.cityId`를 읽어서 `weatherMockData` 배열에서 해당 도시 객체를 찾아 화면에 뿌려주는 식으로 만들었습니다. WeatherAboutView.vue는 이 프로젝트가 어떤 흐름으로 만들어졌는지 소개하는 문구와 "대시보드 홈으로 이동" 버튼을 넣었고, 추가 view로는 즐겨찾기한 도시만 모아 보여주는 WeatherFavoritesView.vue를 만들어서 `/weather-app/favorites`로 라우팅했습니다.
+- **지연 로딩**: 원래 `src/router/index.js`의 모든 라우트가 이미 `component: () => import(...)` 형태였어서, 새로 추가한 `/weather-app` 계열 라우트도 그 관례를 그대로 따라 지연 로딩으로 등록했습니다.
+- **Catch-all Route**: `/:pathMatch(.*)*` 패턴으로 `NotFoundView.vue`를 연결했습니다. Vue Router는 routes 배열에 등록된 순서대로 매칭을 시도하기 때문에, 이 라우트를 배열 맨 마지막에 둬서 다른 라우트에 안 걸리는 경로만 여기로 떨어지게 했습니다.
+- **진입점**: App.vue의 Navigation Bar와 `<RouterView />`는 처음부터 있던 구조라 손댈 게 없었고, Handson 목록에 "날씨 Vue Router 앱" 링크 하나만 추가해서 진입점을 열어뒀습니다.
 
-### 트러블 슈팅: 왜 `/`가 아니라 `/weather-app`인지
+### 각 View
 
-과제 요구사항 에서는 WeatherHomeView를 `/` 경로에 두라고 되어 있는데, 저는 `/weather-app`에 뒀습니다. 솔직히 말하면 이 프로젝트의 `/` 경로가 지금까지 실습한 모든 Code Challenge/Handson 링크를 모아둔 야매(?) 홈 화면 역할을 하고 있어서, 여기를 WeatherHomeView로 갈아치우면 지금까지 쌓아온 다른 실습 페이지로 가는 진입로가 전부 없어지는 상황이었습니다. 그래서 기존 라우터 구조를 건드리지 않는 선에서 `/weather-app`을 이번 과제만의 새 루트로 잡고, 그 밑에 `/weather-app/about`, `/weather-app/favorites`, `/weather-app/weather/:cityId`를 매달았습니다. Catch-all Route만 앱 전체에 공통으로 걸리는 전역 라우트라 그대로 뒀습니다.
+- **WeatherHomeView.vue**: WeatherParent.vue의 반응형 상태와 로직을 거의 그대로 옮겨왔고, 상세보기 버튼을 눌렀을 때 기존의 `window.alert()` 호출을 지우고 `router.push()`로 상세 페이지(`/weather-app/weather/:cityId`)로 이동하도록 바꿨습니다.
+- **WeatherDetailView.vue**: `onMounted` 시점에 라우트 파라미터 `route.params.cityId`를 읽어서 `weatherMockData` 배열에서 해당 도시 객체를 찾아 화면에 뿌려줍니다.
+- **WeatherAboutView.vue**: 이 프로젝트가 어떤 흐름으로 만들어졌는지 소개하는 문구와 "대시보드 홈으로 이동" 버튼을 넣었습니다.
+- **WeatherFavoritesView.vue**: 즐겨찾기한 도시만 모아 보여주는 추가 view로, `/weather-app/favorites`로 라우팅했습니다.
+
+### 트러블슈팅: 왜 `/`가 아니라 `/weather-app`인지
+
+과제 요구사항에서는 WeatherHomeView를 `/` 경로에 두라고 되어 있는데, 저는 `/weather-app`에 뒀습니다. 솔직히 말하면 이 프로젝트의 `/` 경로가 지금까지 실습한 모든 Code Challenge/Handson 링크를 모아둔 야매(?) 홈 화면 역할을 하고 있어서, 여기를 WeatherHomeView로 갈아치우면 지금까지 쌓아온 다른 실습 페이지로 가는 진입로가 전부 없어지는 상황이었습니다. 그래서 기존 라우터 구조를 건드리지 않는 선에서 `/weather-app`을 이번 과제만의 새 루트로 잡고, 그 밑에 `/weather-app/about`, `/weather-app/favorites`, `/weather-app/weather/:cityId`를 매달았습니다. Catch-all Route만 앱 전체에 공통으로 걸리는 전역 라우트라 그대로 뒀습니다.
 
 ---
 
@@ -132,7 +136,11 @@ WeatherHomeView.vue는 WeatherParent.vue의 반응형 상태와 로직을 거의
 
 ### feelsLikeStore.js: 계절별 체감온도 계산
 
-`season`이라는 state 하나에 `'summer' | 'winter'`를 담아두고, `calculateFeelsLike(city)`가 이 상태를 보고 두 공식 중 하나를 골라 계산합니다. 여름철 공식은 습구온도(Tw)가 먼저 필요한데, 기상자료개방포털 공식에는 상대습도만 주어져 있어서 Stull(2011)의 근사식으로 습구온도부터 구한 다음 체감온도 공식에 넣었습니다. 겨울철 공식은 기온이 10℃를 넘거나 풍속이 1.3m/s보다 느리면 애초에 산출 대상이 아니라서, 조건을 만족 못 하면 `null`을 반환하도록 했습니다. 처음엔 `setSeason(value)`로 두 버튼 중 하나를 고르는 식으로 만들었는데, 과제 예시(configStore의 `toggleUnit`)가 버튼 하나로 두 상태를 스위칭하는 방식이라 그에 맞춰 `toggleSeason()` 하나로 여름철/겨울철을 오가도록 바꿨습니다. 라벨 표시용으로 `unitSymbol`에 대응하는 `seasonLabel` getter도 추가했습니다.
+`season`이라는 state 하나에 `'summer' | 'winter'`를 담아두고, `calculateFeelsLike(city)`가 이 상태를 보고 두 공식 중 하나를 골라 계산합니다.
+
+- **여름철 공식**은 습구온도(Tw)가 먼저 필요한데, 기상자료개방포털 공식에는 상대습도만 주어져 있어서 Stull(2011)의 근사식으로 습구온도부터 구한 다음 체감온도 공식에 넣었습니다.
+- **겨울철 공식**은 기온이 10℃를 넘거나 풍속이 1.3m/s보다 느리면 애초에 산출 대상이 아니라서, 조건을 만족 못 하면 `null`을 반환하도록 했습니다.
+- **토글 방식**: 처음엔 `setSeason(value)`로 두 버튼 중 하나를 고르는 식으로 만들었는데, 과제 예시(configStore의 `toggleUnit`)가 버튼 하나로 두 상태를 스위칭하는 방식이라 그에 맞춰 `toggleSeason()` 하나로 여름철/겨울철을 오가도록 바꿨습니다. 라벨 표시용으로 `unitSymbol`에 대응하는 `seasonLabel` getter도 추가했습니다.
 
 ```js
 // stores/feelsLikeStore.js
@@ -172,7 +180,7 @@ export const useFeelsLikeStore = defineStore('feelsLike', () => {
 </div>
 ```
 
-버튼을 처음엔 "여름철 공식"/"겨울철 공식" 버튼 두 개를 나란히 두고 클릭한 쪽을 활성화하는 식으로 테스트 했었었는데, 과제 예시(UnitToggler.vue: `configStore.toggleUnit`)가 라벨 하나 + 토글 버튼 하나로 상태를 스위칭하는 방식이라 그 구조를 그대로 가져와서 지금 형태로 바꿨습니다.
+버튼을 처음엔 "여름철 공식"/"겨울철 공식" 두 개를 나란히 두고 클릭한 쪽을 활성화하는 식으로 테스트했는데, 과제 예시(UnitToggler.vue: `configStore.toggleUnit`)가 라벨 하나 + 토글 버튼 하나로 상태를 스위칭하는 방식이라 그 구조를 그대로 가져와서 지금 형태로 바꿨습니다.
 
 ### 메인/상세에 똑같이 적용
 
@@ -190,11 +198,11 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 
 ## Handson: Weather Axios
 
-1. **실제 날씨 데이터 적용** : Weather Store까지 쓰던 가짜 도시 데이터를 걷어내고 OpenWeatherMap 실시간 데이터로 전면 교체했습니다.
-2. **OpenWeatherMap API 추가로 기능 확대** : 현재 날씨에 더해 예보 / 대기질 API를 붙였습니다.
-3. **체감온도 활용 + 외부 위치 API** : 앱이 계산만 하던 체감온도를 온열질환·한랭질환 정부 예방 가이드에 연결하고, 브라우저 위치 API로 사용자가 자기 현재 위치를 작업장으로 등록해 예방 조치를 확인할 수 있게 했습니다.
+1. **실제 날씨 데이터 적용**: Weather Store까지 쓰던 가짜 도시 데이터를 걷어내고 OpenWeatherMap 실시간 데이터로 전면 교체했습니다.
+2. **OpenWeatherMap API 추가로 기능 확대**: 현재 날씨에 더해 예보 / 대기질 API를 붙였습니다.
+3. **체감온도 활용 + 외부 위치 API**: 앱이 계산만 하던 체감온도를 온열질환·한랭질환 정부 예방 가이드에 연결하고, 브라우저 위치 API로 사용자가 자기 현재 위치를 작업장으로 등록해 예방 조치를 확인할 수 있게 했습니다.
 
-### 실제 날씨 데이터 적용 (목업데이터 → API)
+### 실제 날씨 데이터 적용 (목업 데이터 → API)
 
 지금까지 `weatherMockData` 상수를 그대로 화면에 뿌렸는데, 이번엔 그 자리를 전부 OpenWeatherMap 응답으로 대체했습니다.
 
@@ -239,20 +247,20 @@ WeatherCard.vue(메인 목록)와 WeatherStoreDetailView.vue(상세 페이지) �
 화면 구성은 유지하면서 표현만 PrimeVue로 바꾸고, 텍스트 옆 이모지를 걷어내 그 의미를 컴포넌트로 옮겼습니다.
 
 | 원래                          | 대체 (PrimeVue)                              |
-| ----------------------------- | -------------------------------------------- |
-| 카드 / 패널 박스              | `Card`, `Panel`                              |
-| 위험 단계 뱃지 (`🔥 더움` 등) | `Tag` — 색상 severity                        |
+| ----------------------------- | ------------------------------------------- |
+| 카드 / 패널 박스              | `Card`, `Panel`                             |
+| 위험 단계 뱃지 (`🔥 더움` 등) | `Tag` — 색상 severity                       |
 | 즐겨찾기 `⭐/☆`               | `Button` 아이콘 (`pi-star-fill` / `pi-star`) |
-| 로딩 `⏳` / 경보·안내 `⚠️`    | `ProgressSpinner` / `Message`                |
-| 계절 토글                     | `SelectButton` (여름철·겨울철)               |
-| 도시 검색창                   | `IconField` + `InputText`                    |
-| 단계별 기준 표                | `DataTable` + `Column`                       |
-| 3대 수칙 체크리스트           | `Checkbox` + `ProgressBar`                   |
-| 대기질 지수(AQI)              | `Knob` + `Tag`                               |
-| 작업장 좌표 입력 폼           | `InputText` + `Button`                       |
+| 로딩 `⏳` / 경보·안내 `⚠️`    | `ProgressSpinner` / `Message`               |
+| 계절 토글                     | `SelectButton` (여름철·겨울철)              |
+| 도시 검색창                   | `IconField` + `InputText`                   |
+| 단계별 기준 표                | `DataTable` + `Column`                      |
+| 3대 수칙 체크리스트           | `Checkbox` + `ProgressBar`                  |
+| 대기질 지수(AQI)              | `Knob` + `Tag`                              |
+| 작업장 좌표 입력 폼           | `InputText` + `Button`                      |
 | 네비게이션 이모지             | PrimeIcons (`pi-th-large`, `pi-building` 등) |
 
-### 코드 전후 비교 예시(StatusBar)
+### 코드 전후 비교 예시 (StatusBar)
 
 `div` + scoped CSS를 PrimeVue `Message` 한 줄로 대체하고 스타일 블록을 통째로 지웠습니다.
 
@@ -285,7 +293,7 @@ import Message from 'primevue/message'
 
 ### 계절별 배경 테마
 
-현재 계절에 따라, `assets/weather-ui.css`가 배경색만 바꿉니다 — 여름 `#fdf4e8`(크림), 겨울 `#eaf1f9`(페일 블루). weather-ui 화면을 벗어나면 `onUnmounted`에서 속성을 지워 다른 화면에는 영향이 없습니다.
+현재 계절에 따라 `assets/weather-ui.css`가 배경색만 바꿉니다 — 여름 `#fdf4e8`(크림), 겨울 `#eaf1f9`(페일 블루). weather-ui 화면을 벗어나면 `onUnmounted`에서 속성을 지워 다른 화면에는 영향이 없습니다.
 
 ---
 
@@ -299,6 +307,6 @@ import Message from 'primevue/message'
 ### Build & Deployment
 
 1. **Build**: `npm run build` → `dist/`에 정적 파일 생성. 로컬에서 `npm run preview`로 프로덕션 빌드의 라우팅·API 동작을 확인했습니다.
-2. **Hosting**: **Vercel**을 통해서 배포했습니다. GitHub 레포지토리를 연결해 `main` push마다 자동 빌드(`npm run build`) / 배포되며, `dist/`가 정적 파일로 서빙됩니다. SPA(`createWebHistory`)라 모든 경로를 `index.html`로 되돌리는 fallback은 Vercel이 Vite 프로젝트에 자동 적용하고, `VITE_OPENWEATHER_API_KEY`는 Vercel 프로젝트 환경 변수(Production·Preview)로 등록했습니다.
+2. **Hosting**: **Vercel**을 통해 배포했습니다. GitHub 레포지토리를 연결해 `main` push마다 자동 빌드(`npm run build`) / 배포되며, `dist/`가 정적 파일로 서빙됩니다. SPA(`createWebHistory`)라 모든 경로를 `index.html`로 되돌리는 fallback은 Vercel이 Vite 프로젝트에 자동 적용하고, `VITE_OPENWEATHER_API_KEY`는 Vercel 프로젝트 환경 변수(Production·Preview)로 등록했습니다.
 
 - 배포 URL: <https://skala-vue-two-liart.vercel.app/>

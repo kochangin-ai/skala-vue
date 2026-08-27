@@ -1,9 +1,9 @@
 <script setup>
 // 작업장 관리 화면들이 공유하는 헤더.
-// Weather Axios 단계의 일부라, SeasonToggler(여름=온열질환 / 겨울=한랭질환)와
-// Weather Axios 대시보드로 돌아가는 링크를 같이 둔다.
+// 같은 Weather Axios handson이라 최상단은 공통 WeatherAppHeader를 그대로 쓰고,
+// 그 아래 작업장 관리 전용 서브 내비만 한 줄 덧붙인다. (계절 토글은 상단 헤더에 이미 있음)
 import { computed } from 'vue'
-import SeasonToggler from '../SeasonToggler.vue'
+import WeatherAppHeader from '@/components/exercise-axios/WeatherAppHeader.vue'
 import { useFeelsLikeAxiosStore } from '@/stores/feelsLikeAxiosStore'
 
 const seasonStore = useFeelsLikeAxiosStore()
@@ -13,54 +13,48 @@ const mode = computed(() =>
 </script>
 
 <template>
-  <header class="heat-header">
-    <p class="badge">🏗️ Weather Axios · 작업장 관리 — {{ mode }}</p>
-    <nav class="heat-nav">
-      <RouterLink to="/weather-axios/heat-safety">🏗️ 현장 현황</RouterLink>
+  <div>
+    <WeatherAppHeader />
+    <nav class="heat-subnav">
+      <span class="heat-subnav-label">🏗️ 작업장 관리 · {{ mode }}</span>
+      <span class="spacer"></span>
+      <RouterLink to="/weather-axios/heat-safety">현장 현황</RouterLink>
       <span class="divider">|</span>
-      <RouterLink to="/weather-axios/heat-safety/about">ℹ️ 단계별 기준</RouterLink>
-      <span class="divider">|</span>
-      <RouterLink to="/weather-axios">↩︎ 날씨 대시보드</RouterLink>
-      <SeasonToggler />
+      <RouterLink to="/weather-axios/heat-safety/about">단계별 기준</RouterLink>
     </nav>
-  </header>
+  </div>
 </template>
 
 <style scoped>
-.heat-header {
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e0e0e0;
-  text-align: center;
-}
-
-.badge {
-  margin: 0 0 8px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #c0392b;
-}
-
-.heat-nav {
+.heat-subnav {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: 13px;
+  margin: -6px 0 18px;
 }
 
-.heat-nav a {
+.heat-subnav-label {
+  color: #888;
+  font-weight: bold;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.heat-subnav a {
   color: #666;
   text-decoration: none;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
 }
 
-.heat-nav a.router-link-exact-active {
-  color: #c0392b;
-  border-bottom-color: #c0392b;
+.heat-subnav a.router-link-exact-active {
+  color: #2f6fed;
+  border-bottom-color: #2f6fed;
   font-weight: bold;
 }
 
