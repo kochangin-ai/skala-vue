@@ -1,15 +1,20 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 // 본인 추가 Store: 기상청 체감온도 산출식을 계절별로 계산하는 store
-// 실제 날짜 대신 SeasonToggler.vue에서 직접 고른 계절(state)을 기준으로 공식을 바꿔 적용한다.
+// 실제 날짜 대신 SeasonToggler.vue에서 토글한 계절(state)을 기준으로 공식을 바꿔 적용한다.
 export const useFeelsLikeStore = defineStore('feelsLike', () => {
   // state: 현재 적용 중인 계절 공식 ('summer' | 'winter')
   const season = ref('summer')
 
-  // action: 계절 전환
-  const setSeason = (value) => {
-    season.value = value
+  // getter: 현재 계절 상태에 맞는 라벨
+  const seasonLabel = computed(() =>
+    season.value === 'summer' ? '☀️ 여름철 공식' : '❄️ 겨울철 공식',
+  )
+
+  // action: 'summer'와 'winter'를 토글(스위칭)
+  const toggleSeason = () => {
+    season.value = season.value === 'summer' ? 'winter' : 'summer'
   }
 
   // Stull(2011) 근사식: 기온(Ta)과 상대습도(RH%)로 습구온도(Tw) 추정
@@ -42,5 +47,5 @@ export const useFeelsLikeStore = defineStore('feelsLike', () => {
     return Math.round(feelsLike * 10) / 10
   }
 
-  return { season, setSeason, calculateFeelsLike }
+  return { season, seasonLabel, toggleSeason, calculateFeelsLike }
 })

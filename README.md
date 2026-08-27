@@ -132,14 +132,17 @@ WeatherHomeView.vue는 WeatherParent.vue의 반응형 상태와 로직을 거의
 
 ### feelsLikeStore.js: 계절별 체감온도 계산
 
-`season`이라는 state 하나에 `'summer' | 'winter'`를 담아두고, `calculateFeelsLike(city)`가 이 상태를 보고 두 공식 중 하나를 골라 계산합니다. 여름철 공식은 습구온도(Tw)가 먼저 필요한데, 기상자료개방포털 공식에는 상대습도만 주어져 있어서 Stull(2011)의 근사식으로 습구온도부터 구한 다음 체감온도 공식에 넣었습니다. 겨울철 공식은 기온이 10℃를 넘거나 풍속이 1.3m/s보다 느리면 애초에 산출 대상이 아니라서, 조건을 만족 못 하면 `null`을 반환하도록 했습니다.
+`season`이라는 state 하나에 `'summer' | 'winter'`를 담아두고, `calculateFeelsLike(city)`가 이 상태를 보고 두 공식 중 하나를 골라 계산합니다. 여름철 공식은 습구온도(Tw)가 먼저 필요한데, 기상자료개방포털 공식에는 상대습도만 주어져 있어서 Stull(2011)의 근사식으로 습구온도부터 구한 다음 체감온도 공식에 넣었습니다. 겨울철 공식은 기온이 10℃를 넘거나 풍속이 1.3m/s보다 느리면 애초에 산출 대상이 아니라서, 조건을 만족 못 하면 `null`을 반환하도록 했습니다. 처음엔 `setSeason(value)`로 두 버튼 중 하나를 고르는 식으로 만들었는데, 과제 예시(configStore의 `toggleUnit`)가 버튼 하나로 두 상태를 스위칭하는 방식이라 그에 맞춰 `toggleSeason()` 하나로 여름철/겨울철을 오가도록 바꿨습니다. 라벨 표시용으로 `unitSymbol`에 대응하는 `seasonLabel` getter도 추가했습니다.
 
 ```js
 // stores/feelsLikeStore.js
 export const useFeelsLikeStore = defineStore('feelsLike', () => {
   const season = ref('summer')
-  const setSeason = (value) => {
-    season.value = value
+  const seasonLabel = computed(() =>
+    season.value === 'summer' ? '☀️ 여름철 공식' : '❄️ 겨울철 공식',
+  )
+  const toggleSeason = () => {
+    season.value = season.value === 'summer' ? 'winter' : 'summer'
   }
 
   const calculateFeelsLike = ({ temp, humidity, windSpeed }) => {
@@ -153,9 +156,23 @@ export const useFeelsLikeStore = defineStore('feelsLike', () => {
     return 13.12 + 0.6215 * temp - 11.37 * v016 + 0.3965 * v016 * temp
   }
 
-  return { season, setSeason, calculateFeelsLike }
+  return { season, seasonLabel, toggleSeason, calculateFeelsLike }
 })
 ```
+
+### SeasonToggler.vue: Navigation Bar 옆에 배치
+
+`체감 공식: 여름철` 같은 현재 상태 표시 영역과 `계절변경` 버튼을 한 세트로 묶어서, `WeatherAppHeader.vue`의 `<nav>` 안 "ℹ️ 서비스 소개" 바로 뒤에 나란히 넣었습니다. `WeatherAppHeader.vue`는 홈/즐겨찾기/소개/상세 페이지가 전부 공유하는 컴포넌트라, 이 토글도 페이지를 옮겨 다녀도 항상 같은 위치(Navigation Bar 옆)에 떠 있습니다.
+
+```vue
+<!-- SeasonToggler.vue -->
+<div style="display: inline-flex; align-items: center; gap: 8px">
+  <span>체감 공식: <strong>{{ feelsLikeStore.season === 'summer' ? '☀️ 여름철' : '❄️ 겨울철' }}</strong></span>
+  <button @click="feelsLikeStore.toggleSeason" class="toggle-btn">계절변경</button>
+</div>
+```
+
+버튼을 처음엔 "여름철 공식"/"겨울철 공식" 버튼 두 개를 나란히 두고 클릭한 쪽을 활성화하는 식으로 테스트 했었었는데, 과제 예시(UnitToggler.vue: `configStore.toggleUnit`)가 라벨 하나 + 토글 버튼 하나로 상태를 스위칭하는 방식이라 그 구조를 그대로 가져와서 지금 형태로 바꿨습니다.
 
 ### 메인/상세에 똑같이 적용
 
